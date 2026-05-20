@@ -19,8 +19,9 @@ jobs:
       - name: Dependency Mapping Framework Installs
         run: |
           pip install pysigma pysigma-backend-chronicle google-auth requests ioc-finder
-          curl -L https://github.com/timescale/rsigma/releases/download/v0.10.0/rsigma-linux-amd64 -o /usr/local/bin/rsigma
-          chmod +x /usr/local/bin/rsigma
+          # Added 'sudo' to safely write to the system binary directory
+          sudo curl -L https://github.com/timescale/rsigma/releases/download/v0.10.0/rsigma-linux-amd64 -o /usr/local/bin/rsigma
+          sudo chmod +x /usr/local/bin/rsigma
 
       - name: Execute Live Orchestration Suite
         env:

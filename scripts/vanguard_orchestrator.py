@@ -26,12 +26,23 @@ class VanguardOrchestrator:
 
     def generate_yaral_logic(self):
         """Detection Engineering Facet: Parse and Compile Abstract Rules to SIEM Target Syntax"""
-        os.system("rsigma resolve -p pipelines/dynamic_sources.yml -s active_c2_feeds --pretty > resolved.json")
+        # 1. Drop the '-s' flag to resolve the ENTIRE pipeline configuration into a JSON object
+        os.system("rsigma resolve -p pipelines/dynamic_sources.yml --pretty > resolved.json")
         
         with open("resolved.json", "r") as f:
-            raw_ips = json.load(f)
+            all_sources = json.load(f)
             
-        sanitized_ips = self.filter_malicious_feeds(raw_ips)
+        # 2. Extract both arrays safely and combine them into a single deduplicated list
+        feodo_ips = all_sources.get("active_c2_feeds", [])
+        urlhaus_ips = all_sources.get("urlhaus_malicious_ips", [])
+        
+        # Combining lists using a set ensures zero duplicate IPs hit your SIEM rule
+        combined_raw_ips = list(set(feodo_ips + urlhaus_ips))
+        
+        # 3. Clean the aggregated list against your business safety guardrails
+        sanitized_ips = self.filter_malicious_feeds(combined_raw_ips)
+        
+        # 4. Compile into your deployment target
         backend = ChronicleBackend()
         ruleset = SigmaCollection.from_yaml(self.template_path)
         compiled_yaral = backend.convert(ruleset)

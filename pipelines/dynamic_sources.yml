@@ -1,0 +1,13 @@
+name: Vanguard Global Threat Intel Pipeline
+sources:
+  active_c2_feeds:
+    type: http
+    url: https://feodotracker.abuse.ch/downloads/ipblocklist.json
+    format: json
+    extract:
+      type: jsonpath
+      expr: "$.[*].ip_address"
+    refresh:
+      interval: 14400 # 4 Hours TTL Caching
+    on_error: use_cached
+    required: true

@@ -1,0 +1,13 @@
+{
+  "comment": "Sanitized infrastructure block to protect against upstream feed poisoning",
+  "critical_subnets": [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16"
+  ],
+  "trusted_dns_providers": [
+    "1.1.1.1",
+    "8.8.8.8",
+    "9.9.9.9"
+  ]
+}

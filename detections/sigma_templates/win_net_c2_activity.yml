@@ -1,0 +1,15 @@
+title: Outbound Network Connection to Active Threat Infrastructure
+id: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+status: production
+description: Detects endpoint outbound network communication to known high-fidelity active command and control (C2) servers.
+logsource:
+    category: network_connection
+    product: windows
+detection:
+    selection:
+        DestinationIp: ${source.active_c2_feeds}
+    condition: selection
+falsepositives:
+    - Internal security validation testing
+    - Authorized network scanning tools
+level: critical

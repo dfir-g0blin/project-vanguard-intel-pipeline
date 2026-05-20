@@ -1,0 +1,28 @@
+name: Project Vanguard Pipeline Orchestrator
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  execute-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Source Repository Ingestion
+        uses: actions/checkout@v4
+
+      - name: Environment Workspace Verification
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dependency Mapping Framework Installs
+        run: |
+          pip install pysigma pysigma-backend-chronicle google-auth requests ioc-finder
+          curl -L https://github.com/timescale/rsigma/releases/download/v0.10.0/rsigma-linux-amd64 -o /usr/local/bin/rsigma
+          chmod +x /usr/local/bin/rsigma
+
+      - name: Execute Live Orchestration Suite
+        env:
+          SIEM_API_CREDENTIALS: ${{ secrets.SANITIZED_SIEM_SECRET_PASSTHROUGH }}
+        run: python scripts/vanguard_orchestrator.py

@@ -51,7 +51,7 @@ To test the pipeline locally without pushing live configurations to a production
 ## 3. Risk Management & Enterprise Guardrails
 * **Upstream Feed Poisoning:** Upstream Feed Poisoning: Managed via scripts/enterprise_allowlist.json. If a threat intel feed accidentally includes public DNS providers (e.g., 1.1.1.1) or internal RFC 1918 company ranges, the orchestrator strips them prior to compilation.
 * **SIEM File Size Boundaries:** The engine tracks array size constraints. If an external feed spikes unpredictably, the compiler splits the data across segmented rule batches (Vanguard_C2_Part1, Vanguard_C2_Part2) to ensure zero SIEM compilation drops.
-* **Resilient Graceful Degredation**Built-in error handling wraps all ingestion steps. If an external OSINT provider experiences an outage, the script catches the failure and serves a verified fallback telemetry matrix to protect pipeline continuity.
+* **Resilient Graceful Degredation:** Built-in error handling wraps all ingestion steps. If an external OSINT provider experiences an outage, the script catches the failure and serves a verified fallback telemetry matrix to protect pipeline continuity.
 
 ## 4. Future Roadmap & Extensibility
 

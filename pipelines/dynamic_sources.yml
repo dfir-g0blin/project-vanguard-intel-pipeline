@@ -11,3 +11,16 @@ sources:
       interval: 14400 # 4 Hours TTL Caching
     on_error: use_cached
     required: true
+
+# ADDING A SECOND REPUTATION SITE (Example: URLhaus malware URLs)
+  urlhaus_malicious_ips:
+    type: http
+    url: https://urlhaus-api.abuse.ch/v1/urls/recent/
+    format: json
+    extract:
+      type: jsonpath
+      expr: "$.urls[*].ip_address"
+    refresh:
+      interval: 14400 # 4 Hours TTL Caching
+    on_error: use_cached
+    required: true

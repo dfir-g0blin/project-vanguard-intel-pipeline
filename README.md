@@ -1,20 +1,61 @@
-# Project Vanguard: Autonomous Multi-Facet Threat Intelligence & Detection Pipeline
+# Project Vanguard: Autonomous GitOps Detection Engineering Pipeline
 
-An enterprise-ready, GitOps-driven detection architecture designed to solve the structural decay of static Indicators of Compromise (IOCs). Project Vanguard automates the end-to-end lifecycle of high-fidelity threat intel consumption, security guardrail validation, code translation, streaming telemetry detection, and historical retroactive hunting loops.
+An enterprise-ready, GitOps-driven security architecture designed to eliminate the structural decay of static Indicators of Compromise (IOCs). Project Vanguard automates the lifecycle of high-fidelity threat intelligence ingestion, programmatic guardrail validation, abstract rule compilation, and active cloud-SIEM deployment.
 
-## Architectural Facets Demonstrated
+---
 
-| Security Domain | Operational Engineering Layer |
-| :--- | :--- |
-| **Detection Engineering** | Abstract Sigma tracking rules parameterized with dynamic schema properties compiled natively into cloud-scale SIEM YARA-L targets via `pySigma`. |
-| **Incident Response Automation** | Programmatic infrastructure protective loops. Structural exclusion mechanics designed to eliminate upstream supply-chain compromise or feed poisoning variables. |
-| **Threat Hunting** | Proactive lookback analytics hooks that generate targeted API hunts over a 30-day history path upon identification of new infrastructure. |
-| **DevSecOps / GitOps** | Full deployment management via version control abstractions, eliminating configuration drift and manual tracking patterns through continuous orchestration cycles. |
-| **AI Systems Tooling** | Features an integrated LLM triage engine designed to interpret dynamic feed variations and auto-generate plain-text investigation briefs for the incident response team. |
+## 1. Architectural Overview & Design
 
-## Execution Methodology
+### The Problem
+Traditional detection engineering workflows treat threat intelligence dynamically but treat SIEM rules statically. When a threat feed (e.g., C2 IP addresses) updates, engineers must manually edit rules, causing a massive operational bottleneck, high configuration drift, and stale detections. 
 
-1. **Ingest & Extract:** GitHub Action workflows periodically trigger data ingestion loops.
-2. **Normalize & Defend:** Targets are evaluated against structured json exclusion boundaries to enforce enterprise availability standards.
-3. **Parameterize & Translate:** RSigma extracts variables natively into Sigma abstract models before pySigma emits compiled enterprise detection files.
-4. **Deploy & Inspect:** Final API targets are committed via pipeline state assertions while running deep retroactive lookback checks.
+### The Solution
+Project Vanguard treats detections strictly as code (GitOps). By using **RSigma (v0.10.0+)** and **pySigma**, abstract threat signatures are decoupled from changing indicators. An automated CI/CD loop pulls real-time infrastructure data, filters it through strict corporate health guardrails, compiles it into native Cloud SIEM syntax (YARA-L), and updates active detection states via API.
+
+
+### Core Facets Demonstrated
+* **Detection Engineering:** Decoupling logic from parameters using RSigma template expansions (`${source.feed}`).
+* **Incident Response Automation:** Programmatic allow-lists checking incoming threat telemetry against critical business subnets to prevent catastrophic self-dos or upstream feed poisoning.
+* **DevSecOps / GitOps:** Full deployment management via version control abstractions, eliminating configuration drift and manual tracking patterns through continuous orchestration cycles.
+
+---
+
+## 2. Deployment & Execution Guide
+
+This repository is structured for seamless local testing or fully decoupled execution via GitHub Actions.
+
+### Prerequisites
+* Python 3.11+
+* [RSigma v0.10.0+ Binary](https://github.com/timescale/rsigma/releases/tag/v0.10.0) placed in your system path.
+
+### Local Installation & Setup
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/dfir-g0blin/project-vanguard-intel-pipeline.git](https://github.com/dfir-g0blin/project-vanguard-intel-pipeline.git)
+   cd project-vanguard-intel-pipeline
+   ```
+
+2. Install the necessary transformation and parsing frameworks:
+   ```bash
+   pip install pysigma pysigma-backend-chronicle google-auth requests ioc-finder
+   ```
+
+### Running a Local Dry-Run Validation
+
+To test the pipeline locally without pushing live configurations to a production environment, execute the orchestrator script with default simulation constraints:
+
+``` bash
+# This will pull live feeds, filter them against the allow-list, and print the compiled YARA-L logic
+python scripts/vanguard_orchestrator.py
+```
+
+## 3. Risk Management & Enterprise Guardrails
+* **Upstream Feed Poisoning:** Upstream Feed Poisoning: Managed via scripts/enterprise_allowlist.json. If a threat intel feed accidentally includes public DNS providers (e.g., 1.1.1.1) or internal company ranges, the orchestrator strips them prior to compilation.
+* **SIEM File Size Boundaries:** The engine tracks array size constraints. If an external feed spikes unpredictably, the compiler splits the data across segmented rule batches (Vanguard_C2_Part1, Vanguard_C2_Part2) to ensure zero SIEM compilation drops.
+
+## 4. Future Roadmap & Extensibility
+
+Because Project Vanguard is completely modular, the pipeline is designed to easily scale into broader security operations facets:
+
+* **Automated Retroactive Hunting:** Integrating an automated hook into the sync cycle that programmatically passes newly identified IOCs to a SIEM's lookback API (e.g., Google SecOps UDM Search API) to sweep the previous 30 days of cold storage logs for historical compromises.
+* **LLM Triage Enrichment:** Interfacing with inference APIs (such as Anthropic's Claude) to ingest raw threat feed updates during compilation and automatically generate plain-text analyst investigation briefs embedded straight into the YARA-L metadata block.

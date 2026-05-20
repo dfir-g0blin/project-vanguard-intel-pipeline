@@ -10,13 +10,13 @@ An enterprise-ready, GitOps-driven security architecture designed to eliminate t
 Traditional detection engineering workflows treat threat intelligence dynamically but treat SIEM rules statically. When a threat feed (e.g., C2 IP addresses) updates, engineers must manually edit rules, causing a massive operational bottleneck, high configuration drift, and stale detections. 
 
 ### The Solution
-Project Vanguard treats detections strictly as code (GitOps). By using **RSigma (v0.10.0+)** and **pySigma**, abstract threat signatures are decoupled from changing indicators. An automated CI/CD loop pulls real-time infrastructure data, filters it through strict corporate health guardrails, compiles it into native Cloud SIEM syntax (YARA-L), and updates active detection states via API.
-
+Project Vanguard treats detections strictly as code (GitOps). By using an automated Python orchestration engine and **pySigma**, abstract threat signatures are decoupled from changing indicators. An automated CI/CD loop pulls real-time infrastructure data from multiple open-source intelligence (OSINT) feeds natively, deduplicates the indicators in memory, filters them through strict corporate health guardrails, compiles them into native Cloud SIEM syntax (YARA-L), and updates active detection states via API.
 
 ### Core Facets Demonstrated
-* **Detection Engineering:** Decoupling logic from parameters using RSigma template expansions (`${source.feed}`).
-* **Incident Response Automation:** Programmatic allow-lists checking incoming threat telemetry against critical business subnets to prevent catastrophic self-dos or upstream feed poisoning.
-* **DevSecOps / GitOps:** Full deployment management via version control abstractions, eliminating configuration drift and manual tracking patterns through continuous orchestration cycles.
+* **Detection Engineering:** Decoupling logic from parameters using template parameter hydration seamlessly inside abstract Sigma rules (`status: stable`).
+* **Multi-Feed Ingestion & Normalization:** Programmatically aggregating diverse intelligence feeds (Feodo Tracker & URLhaus) and natively deduplicating tracking arrays using high-performance Python datasets before compilation.
+* **Incident Response Automation:** Programmatic allow-lists checking incoming threat telemetry against critical business subnets and trusted DNS providers to prevent catastrophic self-dos or upstream feed poisoning variables.
+* **DevSecOps / GitOps:** Full execution state management managed natively via version control tracking abstraction barriers, running on modernized GitHub Actions runtime parameters.
 
 ---
 
@@ -26,7 +26,6 @@ This repository is structured for seamless local testing or fully decoupled exec
 
 ### Prerequisites
 * Python 3.11+
-* [RSigma v0.10.0+ Binary](https://github.com/timescale/rsigma/releases/tag/v0.10.0) placed in your system path.
 
 ### Local Installation & Setup
 1. Clone the repository:
@@ -35,23 +34,24 @@ This repository is structured for seamless local testing or fully decoupled exec
    cd project-vanguard-intel-pipeline
    ```
 
-2. Install the necessary transformation and parsing frameworks:
+2. Install the necessary transformation, HTTP client, and parsing frameworks:
    ```bash
-   pip install pysigma pysigma-backend-chronicle google-auth requests ioc-finder
+   pip install pysigma pysigma-backend-secops google-auth requests ioc-finder
    ```
 
 ### Running a Local Dry-Run Validation
 
 To test the pipeline locally without pushing live configurations to a production environment, execute the orchestrator script with default simulation constraints:
 
-``` bash
-# This will pull live feeds, filter them against the allow-list, and print the compiled YARA-L logic
-python scripts/vanguard_orchestrator.py
-```
+   ``` bash
+   # This will pull live feeds, filter them against the allow-list, and print the compiled YARA-L logic
+   python scripts/vanguard_orchestrator.py
+   ```
 
 ## 3. Risk Management & Enterprise Guardrails
-* **Upstream Feed Poisoning:** Upstream Feed Poisoning: Managed via scripts/enterprise_allowlist.json. If a threat intel feed accidentally includes public DNS providers (e.g., 1.1.1.1) or internal company ranges, the orchestrator strips them prior to compilation.
+* **Upstream Feed Poisoning:** Upstream Feed Poisoning: Managed via scripts/enterprise_allowlist.json. If a threat intel feed accidentally includes public DNS providers (e.g., 1.1.1.1) or internal RFC 1918 company ranges, the orchestrator strips them prior to compilation.
 * **SIEM File Size Boundaries:** The engine tracks array size constraints. If an external feed spikes unpredictably, the compiler splits the data across segmented rule batches (Vanguard_C2_Part1, Vanguard_C2_Part2) to ensure zero SIEM compilation drops.
+* **Resilient Graceful Degredation**Built-in error handling wraps all ingestion steps. If an external OSINT provider experiences an outage, the script catches the failure and serves a verified fallback telemetry matrix to protect pipeline continuity.
 
 ## 4. Future Roadmap & Extensibility
 

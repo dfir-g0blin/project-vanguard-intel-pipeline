@@ -5,7 +5,7 @@ import requests
 from google.oauth2 import service_account
 import google.auth.transport.requests
 from sigma.collection import SigmaCollection
-from sigma.backends.chronicle import ChronicleBackend
+from sigma.backends.secops import SecOpsBackend
 
 class VanguardOrchestrator:
     def __init__(self):
@@ -40,10 +40,12 @@ class VanguardOrchestrator:
         combined_raw_ips = list(set(feodo_ips + urlhaus_ips))
         sanitized_ips = self.filter_malicious_feeds(combined_raw_ips)
         
-        # Invoke pySigma engine with native Google SecOps targets
-        backend = ChronicleBackend()
+        # Invoke pySigma engine with the native Google SecOps (Chronicle) target backend
+        backend = SecOpsBackend()
         ruleset = SigmaCollection.from_yaml(self.template_path)
-        compiled_yaral = backend.convert(ruleset)
+
+        # Explicitly compile using the official YARA-L conversion format
+        compiled_yaral = backend.convert(ruleset, output_format="yara_l")
         return compiled_yaral
 
     def deploy_to_siem(self, yaral_payload):

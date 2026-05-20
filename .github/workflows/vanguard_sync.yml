@@ -18,10 +18,20 @@ jobs:
 
       - name: Dependency Mapping Framework Installs
         run: |
-          # Swapped pysigma-backend-chronicle to pysigma-backend-secops
           pip install pysigma pysigma-backend-secops google-auth requests ioc-finder
-          sudo curl -L https://github.com/timescale/rsigma/releases/download/v0.10.0/rsigma-linux-amd64 -o /usr/local/bin/rsigma
+          
+          # Ingest the official v0.5.0 Linux tarball release
+          curl -L https://github.com/timescale/rsigma/releases/download/v0.5.0/rsigma-x86_64-unknown-linux-gnu.tar.gz -o rsigma.tar.gz
+          
+          # Extract the compressed binary archive
+          tar -xzf rsigma.tar.gz
+          
+          # Move the verified binary target to system paths with admin privileges
+          sudo mv rsigma /usr/local/bin/rsigma
           sudo chmod +x /usr/local/bin/rsigma
+          
+          # Clean up the workspace archive residue
+          rm rsigma.tar.gz
 
       - name: Execute Live Orchestration Suite
         env:
